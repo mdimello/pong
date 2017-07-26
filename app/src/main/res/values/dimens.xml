@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="background_line_width">3dp</dimen>
+    <dimen name="background_line_dash_gap">5dp</dimen>
+    <dimen name="background_line_dash_width">20dp</dimen>
+
+    <dimen name="paddle_radius">3dp</dimen>
+    <dimen name="paddle_width">10dp</dimen>
+    <dimen name="paddle_height">50dp</dimen>
+
+    <dimen name="ball_radius">3dp</dimen>
+    <dimen name="ball_width">10dp</dimen>
+    <dimen name="ball_height">10dp</dimen>
+
+</resources>
