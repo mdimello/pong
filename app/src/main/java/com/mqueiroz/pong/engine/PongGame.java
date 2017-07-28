@@ -26,6 +26,8 @@ public class PongGame implements PongEngine.Game
 
     public PongGame( PongPlayer player, PongPlayer ai )
     {
+        mState = PAUSED;
+
         if( player.getId( ) == PongPlayer.PLAYER )
         {
             mPlayer = player;
@@ -55,7 +57,7 @@ public class PongGame implements PongEngine.Game
         {
             if( wasTouched )
             {
-                mState = RUNNING;
+                resumeGame( );
             }
         }
 
@@ -129,17 +131,18 @@ public class PongGame implements PongEngine.Game
 
 
 
-    private boolean isGameReady( )
+    private void resumeGame( )
     {
-        if( mPlayer != null && mAI != null )
+        if( mState == FINISHED )
         {
-            if( mPlayer.getController( ).wasScreenTouched( ) || mAI.getController( ).wasScreenTouched( ) )
-            {
-                return true;
-            }
+            mPlayer.setScore( 0 );
+            mAI.setScore( 0 );
         }
 
-        return false;
+        if( isGameReady( ) )
+        {
+            mState = RUNNING;
+        }
     }
 
 
@@ -154,8 +157,17 @@ public class PongGame implements PongEngine.Game
     private void finishGame( )
     {
         mState = FINISHED;
+    }
 
-        mPlayer.setScore( 0 );
-        mAI.setScore( 0 );
+
+
+    private boolean isGameReady( )
+    {
+        if( mPlayer != null && mAI != null )
+        {
+            return true;
+        }
+
+        return false;
     }
 }

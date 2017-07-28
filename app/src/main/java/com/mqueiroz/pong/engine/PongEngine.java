@@ -3,10 +3,14 @@ package com.mqueiroz.pong.engine;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 
 import com.mqueiroz.pong.PongApplication;
 import com.mqueiroz.pong.R;
@@ -103,6 +107,15 @@ public class PongEngine
         renderRightPaddle( canvas );
         renderBall( canvas );
         renderScores( canvas );
+
+        if( mGame.getState( ) == PongGame.PAUSED )
+        {
+            renderPauseMessage( canvas );
+        }
+        else if( mGame.getState( ) == PongGame.FINISHED )
+        {
+            renderFinishMessage( canvas );
+        }
     }
 
 
@@ -183,13 +196,61 @@ public class PongEngine
         float widthR = score.measureText( String.valueOf( rightScore ) );
 
         int xL = ( mBackground.width( ) / 4 ) - ( int ) ( widthL / 2 );
-        int yL = mBackground.height( ) / 8;
+        int yL = mBackground.height( ) / 7;
 
         int xR = ( 3 * mBackground.width( ) / 4 ) - ( int ) ( widthR / 2 );
-        int yR = mBackground.height( ) / 8;
+        int yR = mBackground.height( ) / 7;
 
         canvas.drawText( String.valueOf( leftScore ), xL, yL, score );
         canvas.drawText( String.valueOf( rightScore ), xR, yR, score );
+    }
+
+
+
+    private void renderPauseMessage( Canvas canvas )
+    {
+        renderMessage( canvas, "Toque na tela para jogar!" );
+    }
+
+
+
+    private void renderFinishMessage( Canvas canvas )
+    {
+        if( mGame.getScore( PongPlayer.PLAYER ) > mGame.getScore( PongPlayer.AI ) )
+        {
+            renderMessage( canvas, "VITÓRIA!!!" );
+        }
+        else
+        {
+            renderMessage( canvas, "Você perdeu =(" );
+        }
+    }
+
+
+
+    private void renderMessage( Canvas canvas, String message )
+    {
+        Paint fillPaint = new Paint( );
+        fillPaint.setColor( ContextCompat.getColor( mContext, R.color.white ) );
+        fillPaint.setTextSize( mBackground.height( ) / 8 );
+
+        Paint strokePaint = new Paint( );
+        strokePaint.setStyle( Paint.Style.STROKE );
+        strokePaint.setStrokeWidth( 1 );
+        strokePaint.setTextSize( mBackground.height( ) / 8 );
+        strokePaint.setColor( Color.BLACK );
+
+        float widthL = fillPaint.measureText( message );
+
+        int x = ( mBackground.width( ) / 2 ) - ( int ) ( widthL / 2 );
+        int y = mBackground.height( ) / 2;
+
+        Drawable background = ContextCompat.getDrawable( mContext, R.drawable.message_background );
+        background.setBounds( 0, 0, canvas.getWidth( ), canvas.getHeight( ) );
+        background.draw( canvas );
+
+        canvas.drawText( message, x, y, fillPaint );
+        canvas.drawText( message, x, y, strokePaint );
     }
 
 
