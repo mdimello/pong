@@ -11,6 +11,9 @@ public class PongAI implements PongGame.GameController, PongEngine.AI
 
     private float deltaY;
 
+    private float mLastKnownBallX = 0;
+    private float mLastKnownBallY = 0;
+
 
 
     public PongAI( )
@@ -46,6 +49,25 @@ public class PongAI implements PongGame.GameController, PongEngine.AI
     @Override
     public void onUpdate( float ballX, float ballY, float paddleY )
     {
-        deltaY = ballY - paddleY;
+        if( ballX - mLastKnownBallX < 0 )
+        {
+            deltaY = 0;
+        }
+        else
+        {
+            deltaY = ballY - paddleY;
+        }
+
+        if( deltaY > 15 )
+        {
+            deltaY = 10;
+        }
+        else if( deltaY < - 15 )
+        {
+            deltaY = - 15;
+        }
+
+        mLastKnownBallX = ballX;
+        mLastKnownBallY = ballY;
     }
 }

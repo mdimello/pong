@@ -202,8 +202,7 @@ public class PongEngine
 
         int ballX = mBackground.width( ) / 2;
         mBall = new Ball( ballX, centerY, mContext );
-        //mBall.setMotionAngle( quadrant * 90 + degree );
-        mBall.setMotionAngle( - 45 );
+        mBall.setMotionAngle( quadrant * 90 + degree );
     }
 
 
