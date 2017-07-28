@@ -4,7 +4,8 @@ import android.content.Context;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.mqueiroz.pong.WorkThread;
+import com.mqueiroz.pong.engine.PongEngine;
+import com.mqueiroz.pong.engine.WorkThread;
 
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback
@@ -13,21 +14,21 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 
 
 
-    public GameView( Context context )
+    public GameView( Context context, PongEngine engine )
     {
         super( context );
 
-        initializeView( );
+        initializeView( engine );
     }
 
 
 
-    void initializeView( )
+    void initializeView( PongEngine engine )
     {
         SurfaceHolder holder = getHolder( );
         getHolder( ).addCallback( this );
 
-        mWorkThread = new WorkThread( holder );
+        mWorkThread = new WorkThread( holder, engine );
 
         setFocusable( true );
     }
@@ -37,7 +38,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public void surfaceCreated( SurfaceHolder arg0 )
     {
-        mWorkThread.start( );
+        if( ! mWorkThread.isAlive( ) )
+        {
+            mWorkThread.start( );
+        }
     }
 
 

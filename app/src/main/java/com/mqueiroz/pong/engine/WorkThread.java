@@ -1,4 +1,4 @@
-package com.mqueiroz.pong;
+package com.mqueiroz.pong.engine;
 
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
@@ -13,13 +13,16 @@ public class WorkThread extends Thread
 
     private final SurfaceHolder mSurfaceHolder;
 
+    private final PongEngine mEngine;
+
     private boolean mIsRunning = false;
 
 
 
-    public WorkThread( SurfaceHolder surfaceHolder )
+    public WorkThread( SurfaceHolder surfaceHolder, PongEngine engine )
     {
         mSurfaceHolder = surfaceHolder;
+        mEngine = engine;
 
         mIsRunning = true;
     }
@@ -38,14 +41,14 @@ public class WorkThread extends Thread
         {
             long start = System.currentTimeMillis( );
 
-            AppConstants.GetEngine( ).Update( );
+            mEngine.update( );
 
             Canvas canvas = mSurfaceHolder.lockCanvas( null );
             if( canvas != null )
             {
                 synchronized( mSurfaceHolder )
                 {
-                    AppConstants.GetEngine( ).Draw( canvas );
+                    mEngine.render( canvas );
                 }
 
                 mSurfaceHolder.unlockCanvasAndPost( canvas );
