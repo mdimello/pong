@@ -26,9 +26,9 @@ public class Ball extends Sprite
 
 
     /**
-     * Sets movement direction
+     * Sets ball movement direction
      *
-     * @param angle X axis derivative
+     * @param angle ball direction in degrees
      */
     public void setMotionAngle( double angle )
     {
@@ -55,25 +55,6 @@ public class Ball extends Sprite
 
 
 
-    //    /**
-    //     * Sets Motion Vector to new value
-    //     *
-    //     * @param deltaX X axis derivative
-    //     * @param deltaY Y axis derivative
-    //     */
-    //    public void setMotionVector( float deltaX, float deltaY )
-    //    {
-    //        mDeltaX = deltaX;
-    //        mDeltaY = deltaY;
-    //    }
-
-
-
-    /**
-     * Gets Motion Vector X derivative
-     *
-     * @return X axis derivative
-     */
     public float getMotionVectorX( )
     {
         return mDeltaX;
@@ -81,11 +62,6 @@ public class Ball extends Sprite
 
 
 
-    /**
-     * Gets Motion Vector Y derivative
-     *
-     * @return Y axis derivative
-     */
     public float getMotionVectorY( )
     {
         return mDeltaY;

@@ -12,23 +12,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 {
     private WorkThread mWorkThread;
 
+    private final PongEngine mEngine;
+
 
 
     public GameView( Context context, PongEngine engine )
     {
         super( context );
 
-        initializeView( engine );
+        mEngine = engine;
+
+        initializeView( );
     }
 
 
 
-    void initializeView( PongEngine engine )
+    void initializeView( )
     {
-        SurfaceHolder holder = getHolder( );
         getHolder( ).addCallback( this );
-
-        mWorkThread = new WorkThread( holder, engine );
 
         setFocusable( true );
     }
@@ -36,9 +37,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 
 
     @Override
-    public void surfaceCreated( SurfaceHolder arg0 )
+    public void surfaceCreated( SurfaceHolder holder )
     {
-        if( ! mWorkThread.isAlive( ) )
+        mWorkThread = new WorkThread( holder, mEngine );
+
+        if( mWorkThread.getState( ) == Thread.State.NEW )
         {
             mWorkThread.start( );
         }

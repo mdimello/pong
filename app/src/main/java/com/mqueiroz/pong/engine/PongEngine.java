@@ -75,9 +75,9 @@ public class PongEngine
     {
         if( mGame.getState( ) == PongGame.RUNNING )
         {
-            updateLeftPaddleCoordinates( );
-            updateRightPaddleCoordinates( );
-            updateBallCoordinates( );
+            updateLeftPaddle( );
+            updateRightPaddle( );
+            updateBall( );
         }
         else if( mGame.getState( ) == PongGame.PAUSED )
         {
@@ -91,6 +91,11 @@ public class PongEngine
 
 
 
+    /**
+     * Draws all objects
+     *
+     * @param canvas canvas to be drawn
+     */
     void render( Canvas canvas )
     {
         renderBackground( canvas );
@@ -119,7 +124,7 @@ public class PongEngine
     /**
      * Draws left paddle
      *
-     * @param canvas canvas on which will be drawn the bitmap
+     * @param canvas canvas to be drawn
      */
     private void renderLeftPaddle( Canvas canvas )
     {
@@ -133,7 +138,7 @@ public class PongEngine
     /**
      * Draws right paddle
      *
-     * @param canvas canvas on which will be drawn the bitmap
+     * @param canvas canvas to be drawn
      */
     private void renderRightPaddle( Canvas canvas )
     {
@@ -145,9 +150,9 @@ public class PongEngine
 
 
     /**
-     * Draws ball paddle
+     * Draws ball
      *
-     * @param canvas canvas on which will be drawn the bitmap
+     * @param canvas canvas to be drawn
      */
     private void renderBall( Canvas canvas )
     {
@@ -160,6 +165,11 @@ public class PongEngine
 
 
 
+    /**
+     * Draws scores
+     *
+     * @param canvas canvas to be drawn
+     */
     private void renderScores( Canvas canvas )
     {
         int leftScore = mGame.getScore( PongPlayer.PLAYER );
@@ -184,6 +194,9 @@ public class PongEngine
 
 
 
+    /**
+     * Resets all objects to initial conditions
+     */
     private void reset( )
     {
         mBackground = new Rect( 0, 0, PongApplication.SCREEN_WIDTH, PongApplication.SCREEN_HEIGHT );
@@ -207,7 +220,11 @@ public class PongEngine
 
 
 
-    private void updateBallCoordinates( )
+    /**
+     * Updates ball coordinates and handle
+     * ball collisions.
+     */
+    private void updateBall( )
     {
         Rect updatedBounds = mBall.getBounds( );
         updatedBounds.left += mBall.getMotionVectorX( );
@@ -233,12 +250,14 @@ public class PongEngine
         else if( Rect.intersects( mBall.getBounds( ), mPlayerPaddle.getBounds( ) ) )
         {
             /* Collision with Left Paddle */
-            mBall.setMotionAngle( processCollision( true, mBall.getBounds( ), mPlayerPaddle.getBounds( ) ) );
+            mBall.setMotionAngle( getMotionAngleAfterCollision( true,
+                    mBall.getBounds( ),
+                    mPlayerPaddle.getBounds( ) ) );
         }
         else if( Rect.intersects( mBall.getBounds( ), mAIPaddle.getBounds( ) ) )
         {
             /* Collision with Right Paddle */
-            mBall.setMotionAngle( processCollision( false, mBall.getBounds( ), mAIPaddle.getBounds( ) ) );
+            mBall.setMotionAngle( getMotionAngleAfterCollision( false, mBall.getBounds( ), mAIPaddle.getBounds( ) ) );
             mBall.mirrorMotionVectorInX( );
         }
 
@@ -250,7 +269,11 @@ public class PongEngine
 
 
 
-    private int processCollision( boolean isLeftSide, Rect ball, Rect paddle )
+    /**
+     * Calculates ball direction after collision
+     * with one of the paddles
+     */
+    private int getMotionAngleAfterCollision( boolean isLeftSide, Rect ball, Rect paddle )
     {
         int interval = paddle.bottom - paddle.top;
         float interpolation = ( ( float ) ( ( ball.bottom + ball.top ) / 2 ) - paddle.top ) / interval;
@@ -267,21 +290,25 @@ public class PongEngine
 
 
 
-    private void updateLeftPaddleCoordinates( )
+    private void updateLeftPaddle( )
     {
-        updatePaddleCoordinates( mPlayerPaddle, mGame.getPaddleMovement( PongPlayer.PLAYER ) );
+        updatePaddle( mPlayerPaddle, mGame.getPaddleMovement( PongPlayer.PLAYER ) );
     }
 
 
 
-    private void updateRightPaddleCoordinates( )
+    private void updateRightPaddle( )
     {
-        updatePaddleCoordinates( mAIPaddle, mGame.getPaddleMovement( PongPlayer.AI ) );
+        updatePaddle( mAIPaddle, mGame.getPaddleMovement( PongPlayer.AI ) );
     }
 
 
 
-    private void updatePaddleCoordinates( Paddle paddle, float deltaY )
+    /**
+     * Updates paddle coordinates and handle
+     * ball collisions.
+     */
+    private void updatePaddle( Paddle paddle, float deltaY )
     {
         Rect updatedBounds = paddle.getBounds( );
         updatedBounds.top = updatedBounds.top + ( int ) deltaY;

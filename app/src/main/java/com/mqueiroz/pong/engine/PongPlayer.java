@@ -24,28 +24,28 @@ public class PongPlayer
 
 
 
-    public int getId( )
+    int getId( )
     {
         return id;
     }
 
 
 
-    public int getScore( )
+    int getScore( )
     {
         return score;
     }
 
 
 
-    public void setScore( int score )
+    void setScore( int score )
     {
         this.score = score;
     }
 
 
 
-    public PongGame.GameController getController( )
+    PongGame.GameController getController( )
     {
         return controller;
     }

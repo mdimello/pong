@@ -1,6 +1,5 @@
 package com.mqueiroz.pong.objects;
 
-import android.graphics.Point;
 import android.graphics.Rect;
 
 
@@ -30,7 +29,7 @@ public abstract class Sprite
 
 
     /**
-     * Sets coordinates to new value
+     * Sets sprite's center coordinates to new value
      *
      * @param x new x axis value
      * @param y new y axis value
@@ -44,7 +43,7 @@ public abstract class Sprite
 
 
     /**
-     * Gets X coordinate value
+     * Gets sprite's center X coordinate value
      *
      * @return X coordinate value
      */
@@ -56,7 +55,7 @@ public abstract class Sprite
 
 
     /**
-     * Gets Y coordinate value
+     * Gets sprite's center Y coordinate value
      *
      * @return Y coordinate value
      */
