@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 
 import com.mqueiroz.pong.PongApplication;
 import com.mqueiroz.pong.R;
@@ -28,7 +27,7 @@ public class PongEngine
     private final AI   mAI;
 
     private Rect   mBackground;
-    private Paddle mLeftPaddle;
+    private Paddle mPlayerPaddle;
     private Paddle mAIPaddle;
     private Ball   mBall;
 
@@ -82,14 +81,10 @@ public class PongEngine
         }
         else if( mGame.getState( ) == PongGame.PAUSED )
         {
-            Log.d( "Touch", "update" );
-
             reset( );
         }
         else if( mGame.getState( ) == PongGame.FINISHED )
         {
-            Log.d( "Touch", "update" );
-
             reset( );
         }
     }
@@ -129,7 +124,7 @@ public class PongEngine
     private void renderLeftPaddle( Canvas canvas )
     {
         Drawable paddle = ContextCompat.getDrawable( mContext, R.drawable.paddle );
-        paddle.setBounds( mLeftPaddle.getBounds( ) );
+        paddle.setBounds( mPlayerPaddle.getBounds( ) );
         paddle.draw( canvas );
     }
 
@@ -196,15 +191,19 @@ public class PongEngine
         int centerY = mBackground.height( ) / 2;
 
         int leftPaddleX = mBackground.width( ) / 8;
-        mLeftPaddle = new Paddle( leftPaddleX, centerY, mContext );
+        mPlayerPaddle = new Paddle( leftPaddleX, centerY, mContext );
 
         int rightPaddleX = 7 * mBackground.width( ) / 8;
         mAIPaddle = new Paddle( rightPaddleX, centerY, mContext );
 
         Random random = new Random( );
+        int quadrant = random.nextInt( 4 );
+        int degree = random.nextInt( 60 ) + 15;
+
         int ballX = mBackground.width( ) / 2;
         mBall = new Ball( ballX, centerY, mContext );
-        mBall.setMotionVector( random.nextInt( 20 ) + 10, random.nextInt( 20 ) + 10 );
+        //mBall.setMotionAngle( quadrant * 90 + degree );
+        mBall.setMotionAngle( - 45 );
     }
 
 
@@ -220,29 +219,28 @@ public class PongEngine
         if( mBackground.left >= updatedBounds.left )
         {
             /* Collision with background left bound */
-            mBall.setMotionVector( - mBall.getMotionVectorX( ), mBall.getMotionVectorY( ) );
             mGame.onPlayerScore( PongPlayer.AI );
         }
         else if( mBackground.right <= updatedBounds.right )
         {
             /* Collision with background right bound */
-            mBall.setMotionVector( - mBall.getMotionVectorX( ), mBall.getMotionVectorY( ) );
             mGame.onPlayerScore( PongPlayer.PLAYER );
         }
         else if( mBackground.top >= updatedBounds.top || mBackground.bottom <= updatedBounds.bottom )
         {
             /* Collision with background X bounds */
-            mBall.setMotionVector( mBall.getMotionVectorX( ), - mBall.getMotionVectorY( ) );
+            mBall.mirrorMotionVectorInX( );
         }
-        else if( Rect.intersects( mBall.getBounds( ), mLeftPaddle.getBounds( ) ) )
+        else if( Rect.intersects( mBall.getBounds( ), mPlayerPaddle.getBounds( ) ) )
         {
             /* Collision with Left Paddle */
-            mBall.setMotionVector( - mBall.getMotionVectorX( ), mBall.getMotionVectorY( ) );
+            mBall.setMotionAngle( processCollision( true, mBall.getBounds( ), mPlayerPaddle.getBounds( ) ) );
         }
         else if( Rect.intersects( mBall.getBounds( ), mAIPaddle.getBounds( ) ) )
         {
             /* Collision with Right Paddle */
-            mBall.setMotionVector( - mBall.getMotionVectorX( ), mBall.getMotionVectorY( ) );
+            mBall.setMotionAngle( processCollision( false, mBall.getBounds( ), mAIPaddle.getBounds( ) ) );
+            mBall.mirrorMotionVectorInX( );
         }
 
         float newX = mBall.getX( ) + mBall.getMotionVectorX( );
@@ -253,9 +251,26 @@ public class PongEngine
 
 
 
+    private int processCollision( boolean isLeftSide, Rect ball, Rect paddle )
+    {
+        int interval = paddle.bottom - paddle.top;
+        float interpolation = ( ( float ) ( ( ball.bottom + ball.top ) / 2 ) - paddle.top ) / interval;
+
+        int degree = ( int ) ( 140 * interpolation + 20 ) - 90;
+
+        if( ! isLeftSide )
+        {
+            degree = degree + 180;
+        }
+
+        return degree;
+    }
+
+
+
     private void updateLeftPaddleCoordinates( )
     {
-        updatePaddleCoordinates( mLeftPaddle, mGame.getPaddleMovement( PongPlayer.PLAYER ) );
+        updatePaddleCoordinates( mPlayerPaddle, mGame.getPaddleMovement( PongPlayer.PLAYER ) );
     }
 
 

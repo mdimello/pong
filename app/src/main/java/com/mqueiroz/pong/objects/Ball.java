@@ -2,15 +2,14 @@ package com.mqueiroz.pong.objects;
 
 
 import android.content.Context;
-import android.graphics.Rect;
 
 import com.mqueiroz.pong.R;
 import com.mqueiroz.pong.utils.DimensionProvider;
 
-import java.util.List;
-
 public class Ball extends Sprite
 {
+    private static final float MOTION_MODULE = 25;
+
     private float mDeltaX = 0;
     private float mDeltaY = 0;
 
@@ -22,23 +21,51 @@ public class Ball extends Sprite
                 y,
                 DimensionProvider.provide( context, R.dimen.ball_width ),
                 DimensionProvider.provide( context, R.dimen.ball_height ) );
-
-        setMotionVector( 20, 20 );
     }
 
 
 
     /**
-     * Sets Motion Vector to new value
+     * Sets movement direction
      *
-     * @param deltaX X axis derivative
-     * @param deltaY Y axis derivative
+     * @param angle X axis derivative
      */
-    public void setMotionVector( float deltaX, float deltaY )
+    public void setMotionAngle( double angle )
     {
-        mDeltaX = deltaX;
-        mDeltaY = deltaY;
+        float sin = ( float ) Math.sin( Math.toRadians( angle ) );
+        float cos = ( float ) Math.cos( Math.toRadians( angle ) );
+
+        mDeltaX = cos * MOTION_MODULE;
+        mDeltaY = sin * MOTION_MODULE;
     }
+
+
+
+    public void mirrorMotionVectorInX( )
+    {
+        mDeltaY = - mDeltaY;
+    }
+
+
+
+    public void mirrorMotionVectorInY( )
+    {
+        mDeltaX = - mDeltaX;
+    }
+
+
+
+    //    /**
+    //     * Sets Motion Vector to new value
+    //     *
+    //     * @param deltaX X axis derivative
+    //     * @param deltaY Y axis derivative
+    //     */
+    //    public void setMotionVector( float deltaX, float deltaY )
+    //    {
+    //        mDeltaX = deltaX;
+    //        mDeltaY = deltaY;
+    //    }
 
 
 

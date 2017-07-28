@@ -61,7 +61,6 @@ public class PongActivity extends AppCompatActivity implements PongGame.GameCont
         {
             case MotionEvent.ACTION_DOWN:
             {
-                Log.d( "Touch", "true" );
                 wasScreenTouched = true;
                 setLastTouch( event.getY( ) );
 
@@ -102,7 +101,6 @@ public class PongActivity extends AppCompatActivity implements PongGame.GameCont
         if( wasScreenTouched )
         {
             wasScreenTouched = false;
-            Log.d( "Touch", "false" );
             return true;
         }
 
